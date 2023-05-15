@@ -15,6 +15,8 @@ population = []
 fitness = []
 # Crossover 
 tasa_crossover = 0.8
+# mutacion
+prob_mutacion = 0.2
 # Generaciones
 num_generaciones = 1
 
@@ -48,14 +50,7 @@ def printer(list, title):
 def population_func ():
     population = []
     #Creamos la poblacion
-    for i in range(population_size):
-        x = random.uniform(x_range[0], x_range[1])
-        y = random.uniform(y_range[0], y_range[1])
-        population.append((x, y))
-
-    print("Población inicial:")
-    for individual in population:
-        print(f"x:{individual[0]}, y:{individual[1]}")
+    population = [[random.uniform(x_range[0], x_range[1]), random.uniform(y_range[0], y_range[1])] for _ in range(50)]
     return population
 
 def fitness_func (population):
@@ -64,7 +59,6 @@ def fitness_func (population):
     for individual in population:
         value = F1(individual[0], individual[1])
         fitness.append(value)
-    printer(fitness , "Lista de Fitness")
     return fitness
 
 # Función de selección de padres utilizando el método de la ruleta
@@ -123,19 +117,35 @@ def reproduccion_ruleta_crossover(poblacion, fitness, tasa_crossover):
 
     return nueva_poblacion
 
+
+# Definimos una función para realizar la mutación
+def mutate(population, prob_mutacion):
+    # Seleccionamos un individuo aleatorio de los mejores individuos
+    individuo = random.choice(population)
+    # Realizamos una mutación en cada uno de los dos valores del individuo
+    for i in range(len(individuo)):
+        # Si la probabilidad de mutación es menor que un número aleatorio entre 0 y 1,
+        # realizamos la mutación
+        if prob_mutacion > random.random():
+            # Generamos un nuevo valor aleatorio en el intervalo [-8, 8]
+            nuevo_valor = random.uniform(-8, 8)
+            # Reemplazamos el valor anterior con el nuevo valor
+            individuo[i] = nuevo_valor
+    return population.append(individuo)
+
 ############## PROCESO #######################
 
 # Creamos la poblacion
 population = population_func()
-# Se modifica el fitness para cada individuo
-fitness = fitness_func(population)
+
 
 # Ejecutar el algoritmo genético durante un número determinado de generaciones
 for i in range(num_generaciones):
+    
+    # Se modifica el fitness para cada individuo
+    fitness = fitness_func(population)
     # Realizar la reproducción utilizando selección por ruleta y crossover de un punto
-    population2 = reproduccion_ruleta_crossover(population, fitness, tasa_crossover)
-
-    # Evaluar la nueva población y actualizar los valores de fitness
-    fitness2 = fitness_func(population)  # lista de valores de fitness actualizados
-
-print(population2)        
+    population = reproduccion_ruleta_crossover(population, fitness, tasa_crossover)
+    # Se realiza la mutacion
+    mutate(population, prob_mutacion)
+ 
