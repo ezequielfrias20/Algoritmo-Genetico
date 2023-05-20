@@ -48,9 +48,9 @@ mejor_ind = {
 }
 # Se modifica el fitness para cada individuo
 fitness = fitness_func(population, parametros['funcion'], F1, F2, parametros['max_min'])
+fitness0 = fitness
 # Ejecutar el algoritmo genético durante un número determinado de generaciones
 for i in range(parametros['n_gen']):
-    
     # Realizar la reproducción utilizando selección por ruleta y crossover de un punto
     population = reproduccion_ruleta_crossover(population, fitness, parametros['p_cruce'])
     # Se realiza la mutacion
@@ -66,4 +66,5 @@ for i in range(parametros['n_gen']):
                 'fitness': fitness[i]
             }
 # print (f"Poblacion final {population}")
-print (f"mejor individuo {mejor_ind['ind']}")
+print (f"mejor individuo {mejor_ind['ind']} en la ronda {mejor_ind['ronda']}")
+imprimir_tabla(pop0, fitness0, population, fitness)
