@@ -81,7 +81,7 @@ def reproduccion_ruleta_crossover(poblacion, fitness, tasa_crossover):
 
 
 # Definimos una función para realizar la mutación
-def mutate(population, prob_mutacion):
+def mutate(population, prob_mutacion, variables):
     # Seleccionamos un individuo aleatorio de los mejores individuos
     individuo = random.choice(population)
     # Realizamos una mutación en cada uno de los dos valores del individuo

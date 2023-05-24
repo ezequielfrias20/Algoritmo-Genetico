@@ -54,7 +54,7 @@ for i in range(parametros['n_gen']):
     # Realizar la reproducción utilizando selección por ruleta y crossover de un punto
     population = reproduccion_ruleta_crossover(population, fitness, parametros['p_cruce'])
     # Se realiza la mutacion
-    mutate(population, parametros['p_muta'])
+    mutate(population, parametros['p_muta'], parametros['variables'])
     # Se modifica el fitness para poder ver el mejor individuo
     fitness = fitness_func(population, parametros['funcion'], F1, F2, parametros['max_min'])
     # Seleccionamos el mejor individuo
