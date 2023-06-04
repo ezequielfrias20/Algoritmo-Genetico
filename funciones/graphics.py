@@ -12,21 +12,23 @@ def show(population):
     plt.plot(x_axis,y_axis)
     plt.show()
 
-def printer(list, title):
-    print(title)
-    for value in list:
-        print(f"x: {value[0]}, y: {value[1]}")
+def imprimir_poblacion(poblacion):
+    for i in range(len(poblacion)):
+        print(f"Binario: {poblacion[i].binario}, Reales: {poblacion[i].real}, Fitness: {poblacion[i].fitness}")
+        # print(type(individuo))
 
-def imprimir_tabla(pob1, fitness1, pob2, fitness2):
+def imprimir_tabla(pob1: list, pob2:list):
+	print(f'pob1 len es {len(pob1)}')
+	print(f'pob2 len es {len(pob2)}')
 	tabla = PrettyTable()
 	tabla.field_names = ('Pob inicial','fitness0','','Pob final','fitness1')
 	for i in range(len(pob1)):
 		tabla.add_row([
-			pob1[i],
-			fitness1[i],
+			pob1[i].real,
+			pob1[i].fitness,
 			'',
-			pob2[i],
-			fitness2[i]
+			pob2[i].real,
+			pob2[i].fitness
 		])
 	print(tabla)
 	return

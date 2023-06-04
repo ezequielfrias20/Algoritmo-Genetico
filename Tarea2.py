@@ -1,4 +1,3 @@
-import numpy as np
 from numpy.random import rand, randint, shuffle
 
 def valores_esperados(poblacion: list):
