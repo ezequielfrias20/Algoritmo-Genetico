@@ -11,7 +11,7 @@ parametros = {
     'n_pob': 50,
     'n_gen': 20,
     'p_cruce': 0.8,
-    'p_muta': 0.1,
+    'p_muta': 0.4,
     'variables': [{
         'nombre': 'x',
         'limites': [-8, 8],
@@ -40,7 +40,7 @@ def F2(x):
 
 
 ############## PROCESO #######################
-# parametros = solicitud_parametros()
+parametros = solicitud_parametros()
 
 # Creamos la poblacion
 poblacion = population_func(parametros['variables'], parametros['n_pob'])
@@ -77,14 +77,16 @@ for generacion in range(parametros['n_gen']):
             mejor_ind = ind
             ronda = generacion
     
-    list_fitness.append(mejor_ind.fitness)
+    list_fitness.append(max([ind.fitness for ind in poblacion]))
     list_ronda.append(generacion)
 
 
-imprimir_tabla(pob0, poblacion)
+# imprimir_tabla(pob0, poblacion)
 print(f"Mejor Individuo {mejor_ind.real} en la ronda {ronda}")
-print(f"Mejor Individuo {mejor_ind.real} en la ronda {ronda}")
+print(f"Fitness {list_fitness}")
 
+
+########################################### GRAFICAS ########################################################
 fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 # Graficar la lista de valores
 # axs[0].plot([ind.fitness for ind in poblacion])

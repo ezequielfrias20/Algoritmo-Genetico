@@ -3,8 +3,8 @@ from decimal import Decimal, ROUND_UP
 from funciones.common import *
 
 parametros_default = {
-    'n_pob': 3,
-    'n_gen': 20,
+    'n_pob': 100,
+    'n_gen': 100,
     'p_cruce': 0.8,
     'p_muta': 0.1
 }
