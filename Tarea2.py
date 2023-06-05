@@ -8,8 +8,8 @@ def valores_esperados(poblacion: list):
 def sobrante_estocastico(poblacion: list):
 	# Versión sin reemplazo
 	val_esp = valores_esperados(poblacion)
-	parte_entera = [val//1 for val in val_esp]
-	sobrante = [val%1 for val in val_esp]
+	parte_entera = [val//1 for val in val_esp] # Parte entera de los sobrantes
+	sobrante = [val%1 for val in val_esp] # Residuo de los sobrantes
 	nueva_poblacion = []
 	for index,val in enumerate(parte_entera):
 		k=0
