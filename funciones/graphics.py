@@ -14,7 +14,7 @@ def show(population):
 
 def imprimir_poblacion(poblacion):
     for i in range(len(poblacion)):
-        print(f"Binario: {poblacion[i].binario}, Reales: {poblacion[i].real}, Fitness: {poblacion[i].fitness}")
+        print(f"Reales: {poblacion[i].real}, Fitness: {poblacion[i].fitness}")
         # print(type(individuo))
 
 def imprimir_tabla(pob1: list, pob2:list):

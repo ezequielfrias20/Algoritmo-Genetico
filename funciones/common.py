@@ -4,11 +4,11 @@ from numpy.random import rand, randint, shuffle
 import random
 from funciones.individuos import Individuo
 from funciones.graphics import *
+import copy
 
 
 def bits_por_variable(var):
-    m = np.log(max(var['limites'])-min(var['limites'])
-               * (10**var['precision']) + 1)/np.log(2)
+    m = np.log(max(var['limites'])-min(var['limites'])* (10**var['precision']) + 1)/np.log(2)
     return round(m)
 
 
@@ -47,9 +47,7 @@ def fitness_func(parametros, poblacion, F1, F2):
     for i in range(len(poblacion)):
         value = F1(poblacion[i].real) if parametros['funcion'] == '1' else F2(
             poblacion[i].real)
-        poblacion[i].fitness = value if parametros['max_min'] else 100 / \
-            (1 + value)
-
+        poblacion[i].fitness = value if parametros['max_min'] else 100 /(1 + value) # La ec 100 /(1 + value) es para que entre menor valor tenga la evalucion del fitness, el fitness sera mas alto
 
 def valores_esperados(poblacion):
     fit_prom = sum([ind.fitness for ind in poblacion])/len(poblacion)
@@ -57,6 +55,16 @@ def valores_esperados(poblacion):
     return valores_esperados
 
 
+
+def renormalizacion_lineal(poblacion):
+  fitness_descendente = sorted(poblacion, key=lambda individuo: individuo.fitness, reverse=True)
+  imprimir_poblacion(fitness_descendente)
+  min_value = fitness_descendente[-1].fitness
+  max_value = fitness_descendente[0].fitness
+  for i in range(len(fitness_descendente)):
+    fitness_descendente[i].fitness = (len(poblacion) * 2 - (2 * (i))) #Su valor maximo es len(poblacion) * 2 y decrementa en 2
+  imprimir_poblacion(fitness_descendente)
+  return fitness_descendente
 
 # Función de selección de padres utilizando el método de la ruleta
 def seleccion_ruleta(poblacion):
@@ -152,3 +160,14 @@ def mutacion_poblacion(pob, p_muta):
         if r > p_muta:
             continue
         ind = mutacion(ind)
+
+def elitismo(poblacion, mejor_ind, index):
+  c = len(poblacion)-1
+  for i,ind in enumerate(poblacion):
+        if ind.fitness > mejor_ind.fitness:
+            mejor_ind = copy.deepcopy(ind)
+            index = i
+        else :
+            c -=1
+  if (c <= 0):
+        poblacion[index] = copy.deepcopy(mejor_ind)

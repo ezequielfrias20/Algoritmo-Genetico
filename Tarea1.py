@@ -5,6 +5,7 @@ import random
 from funciones.common import *
 from funciones.graphics import *
 from funciones.parameter_request import *
+import copy
 
 ############## PARAMETROS #######################
 parametros = {
@@ -15,13 +16,13 @@ parametros = {
     'variables': [{
         'nombre': 'x',
         'limites': [-8, 8],
-        'bits': 10,
-        'precision': 2
+        'bits': 20,
+        'precision': 20
     },{
         'nombre': 'y',
         'limites': [-8, 8],
-        'bits': 10,
-        'precision': 2
+        'bits': 20,
+        'precision': 20
     }],
     'funcion': '1',
     'max_min': False
@@ -40,22 +41,36 @@ def F2(x):
 
 
 ############## PROCESO #######################
-parametros = solicitud_parametros()
+# parametros = solicitud_parametros()
 
 # Creamos la poblacion
 poblacion = population_func(parametros['variables'], parametros['n_pob'])
 pob0 = poblacion
 mejor_ind = poblacion[0]
+index = 0
 ronda = 0
 list_fitness = []
 list_ronda = []
 for generacion in range(parametros['n_gen']):
+    
     #Obtenemos los valores reales para cada individuo
     for i in range(len(poblacion)):
         poblacion[i].real = binario_a_real(poblacion[i].binario, parametros['variables'])
 
     # Evaluamos el fitness
     fitness_func(parametros, poblacion, F1, F2)
+
+    #Renormalizacion
+    # poblacion = renormalizacion_lineal(poblacion)
+
+    # Mejor Individuo
+    for i,ind in enumerate(poblacion):
+        if ind.fitness > mejor_ind.fitness:
+            mejor_ind = ind
+            index = i
+    list_fitness.append(mejor_ind.fitness)
+    list_ronda.append(generacion)
+
     # Seleccion
     individuos_seleccionados = seleccion_ruleta(poblacion)
 
@@ -72,13 +87,16 @@ for generacion in range(parametros['n_gen']):
     # Evaluamos el fitness
     fitness_func(parametros, poblacion, F1, F2)
 
-    for ind in poblacion:
-        if ind.fitness > mejor_ind.fitness:
-            mejor_ind = ind
-            ronda = generacion
-    
-    list_fitness.append(max([ind.fitness for ind in poblacion]))
-    list_ronda.append(generacion)
+    # Elitismo
+    # c = len(poblacion)-1
+    # for i,ind in enumerate(poblacion):
+    #         if ind.fitness > mejor_ind.fitness:
+    #             mejor_ind = copy.deepcopy(ind)
+    #             index = i
+    #         else :
+    #             c -=1
+    # if (c <= 0):
+    #     poblacion[index] = copy.deepcopy(mejor_ind)
 
 
 # imprimir_tabla(pob0, poblacion)
