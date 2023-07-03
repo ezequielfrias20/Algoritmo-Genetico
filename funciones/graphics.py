@@ -32,3 +32,29 @@ def imprimir_tabla(pob1: list, pob2:list):
 		])
 	print(tabla)
 	return
+
+def imprimir_grafico(list_ronda, list_fitness, poblacion):
+	fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+	# Graficar la lista de valores
+	# axs[0].plot([ind.fitness for ind in poblacion])
+	axs[0].plot(list_ronda, list_fitness)
+	axs[0].set_ylabel('Fitness')
+	axs[0].set_xlabel('generacion')
+	axs[0].set_title('Evolucion del mejor individuo')
+
+	# x = []
+	# y = []
+
+	# for ind in poblacion:
+	#     reales = ind.real
+	#     x.append(reales[0])
+	#     y.append(reales[1])
+	# axs[1].scatter(x,y)
+
+	# # Agregar etiquetas de eje y título
+	# axs[1].set_xlabel('Eje x')
+	# axs[1].set_ylabel('Eje y')
+	# axs[1].set_title('Gráfica de puntos')
+
+	# Mostrar el gráfico
+	plt.show()

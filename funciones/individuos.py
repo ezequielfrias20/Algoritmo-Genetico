@@ -8,6 +8,3 @@ class Individuo():
 		self.real = None
 		pass
 	
-	def __str__(self):
-    	 return f"Valor Binario: {self.binario}"
-	

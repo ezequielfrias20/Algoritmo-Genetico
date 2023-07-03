@@ -4,21 +4,46 @@ from funciones.common import *
 
 parametros_default = {
     'n_pob': 100,
-    'n_gen': 100,
+    'n_gen': 50,
     'p_cruce': 0.8,
-    'p_muta': 0.1
+    'p_muta': 0.1,
+    'p_reemplazo' : 0.0
 }
 
 
 def solicitud_parametros():
     """Solicitud de parametros de inicio"""
+    # AG Seleccionado
+    while True:
+        try:
+            AG = str(
+                input('''Cual opcion desea realizar?
+                (1) AG simple
+                (2) AGS1 con renormalización lineal
+                (3) AGM2 con elitismo
+                (4) AGM3 con sustitución parcial
+                (5) AGM4 sin duplicados
+                ''')).strip().upper()
+            if AG not in {'1', '2', '3', '4', '5'}:
+                print('La respuesta debe ser 1, 2, 3, 4 o 5')
+                continue
+            break
+        except:
+            print('Debe insertar un string válido')
+            continue
     # Funcion a usar
     while True:
         try:
             funcion = str(
-                input('Cual función desea optimizar? (1)F1 o (2)F2?  ')).strip().upper()
-            if funcion not in {'1', '2'}:
-                print('La respuesta debe ser 1 o 2')
+                input('''Cual función desea optimizar?
+                    (1) F1 de la Tarea 1
+                    (2) F2 de la Tarea 1
+                    (3) F1 de la Tarea 3
+                    (4) F2 de la Tarea 3
+                    (5) F3 de la Tarea 3
+                    ''')).strip().upper()
+            if funcion not in {'1', '2', '3', '4', '5'}:
+                print('La respuesta debe ser 1, 2, 3, 4 o 5')
                 continue
             break
         except:
@@ -39,7 +64,7 @@ def solicitud_parametros():
     # Variables
     nombre_variable = ('x', 'y', 'z')
     variables = []
-    for i in range(int(funcion)+1):
+    for i in range(3 if funcion in {'2'} else 2):
         while True:
             try:
                 limite_inferior = float(
@@ -99,6 +124,7 @@ def solicitud_parametros():
             'variables': variables,
             'funcion': funcion,
             'max_min': True if max_min == '1' else False,
+            'AG': AG
         } | parametros_default
     # Tamaño de Poblacion
     while True:
@@ -130,6 +156,19 @@ def solicitud_parametros():
         except:
             print('Debe insertar un número de punto flotante')
             continue
+    p_reemplazo = 0.0
+    if AG in {'4'} :
+        # Probabilidad de reemplazo
+        while True:
+            try:
+                p_reemplazo = float(input('Inserte la Probabilidad de reemplazo:  '))
+                if p_reemplazo > 1.0 or p_reemplazo < 0.0:
+                    print('la probabilidad debe ser un número entre 1 y 0')
+                    continue
+                break
+            except:
+                print('Debe insertar un número de punto flotante')
+                continue
     # Probabilidade de mutacion
     while True:
         try:
@@ -148,5 +187,6 @@ def solicitud_parametros():
         'n_pob': n_pob,
         'n_gen': n_gen,
         'p_cruce': p_cruce,
-        'p_muta': p_muta
+        'p_muta': p_muta,
+        'p_reemplazo': p_reemplazo
     }

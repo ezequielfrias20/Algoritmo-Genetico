@@ -5,14 +5,24 @@ import random
 from funciones.individuos import Individuo
 from funciones.graphics import *
 import copy
+from funciones.funciones_optimizar import *
 
-
+def funcion_seleccionada(funcion):
+     # Funcion que selecciona la funcion seleccionada
+     if funcion == '1': return F1_T1
+     if funcion == '2': return F2_T1
+     if funcion == '3': return F1_T3
+     if funcion == '4': return F2_T3
+     if funcion == '5': return F3_T3
+     
 def bits_por_variable(var):
+    # Funcion que selecciona los bits por cada variable
     m = np.log(max(var['limites'])-min(var['limites'])* (10**var['precision']) + 1)/np.log(2)
     return round(m)
 
 
 def binario_a_real(lista_binario_individuo, variables):
+    # Funcion que transforma de binario a real
     indice = 0
     valores_reales_individuo = []
 
@@ -29,6 +39,7 @@ def binario_a_real(lista_binario_individuo, variables):
 
 
 def population_func(variables, longitud_poblacion):
+    # Funcion que se encarga de generar una poblacion
     population = []
 
     # Se suman la longitud de cada individuo para obtener la longitud total del cromosoma.
@@ -43,10 +54,10 @@ def population_func(variables, longitud_poblacion):
     return poblacion
 
 
-def fitness_func(parametros, poblacion, F1, F2):
+def fitness_func(parametros, poblacion, F):
+    # Funcion que se encarga de evaluar el fitness
     for i in range(len(poblacion)):
-        value = F1(poblacion[i].real) if parametros['funcion'] == '1' else F2(
-            poblacion[i].real)
+        value = F(poblacion[i].real)
         poblacion[i].fitness = value if parametros['max_min'] else 100 /(1 + value) # La ec 100 /(1 + value) es para que entre menor valor tenga la evalucion del fitness, el fitness sera mas alto
 
 def valores_esperados(poblacion):
@@ -171,3 +182,70 @@ def elitismo(poblacion, mejor_ind, index):
             c -=1
   if (c <= 0):
         poblacion[index] = copy.deepcopy(mejor_ind)
+
+def sobrante_estocastico(poblacion):
+	# Versión sin reemplazo
+	val_esp = valores_esperados(poblacion)
+	parte_entera = [val//1 for val in val_esp] # Parte entera de los sobrantes
+	sobrante = [val%1 for val in val_esp] # Residuo de los sobrantes
+	nueva_poblacion = []
+	for index,val in enumerate(parte_entera):
+		k=0
+		while k != val:
+			nueva_poblacion.append(poblacion[index])
+			k+=1
+	while len(nueva_poblacion) != len(poblacion):
+		for index, val in enumerate(sobrante):
+			r = rand()
+			if r <= val:
+				nueva_poblacion.append(poblacion[index])
+			if len(nueva_poblacion) == len(poblacion):
+				break
+	return nueva_poblacion
+
+def comparar_fitness(individuo):
+    return individuo.fitness
+
+def cruce_sustitucion_parcial(individuos_seleccionados, tasa_crossover, cantidad_individuos_reemplazar):
+      # Seleccionar parejas de padres utilizando el método de la ruleta
+    parejas = []
+    for i in range(0,len(individuos_seleccionados),2):
+        padre1 = individuos_seleccionados[i]
+        padre2 = individuos_seleccionados[i+1]
+        parejas.append([padre1, padre2])
+
+    # Generar nuevos hijos
+    hijos = []
+
+    while len(hijos) < cantidad_individuos_reemplazar:
+        for pareja in parejas:
+            if rand() > tasa_crossover:
+                    hijo1, hijo2 = crossover_un_punto(pareja[0], pareja[1])
+                    existe_hijo1 = any(getattr(ind, "binario") == getattr(hijo1, "binario") for ind in individuos_seleccionados)
+                    existe_hijo2 = any(getattr(ind, "binario") == getattr(hijo2, "binario") for ind in individuos_seleccionados)
+                    if ((len(hijos) < cantidad_individuos_reemplazar) and (not existe_hijo1)):
+                        print('entro')                
+                        hijos.append(hijo1)
+                    if ((len(hijos) < cantidad_individuos_reemplazar) and (not existe_hijo2)):                  
+                        hijos.append(hijo2)
+                
+
+    # Combinar padres y hijos en una nueva población
+    return hijos
+     
+
+def sustitucion_parcial(poblacion, parametros):
+	# Obtenemos la poblacion que se va a proceder a realizar la sustitucion
+
+    # Ordenamos de manera descendente
+    individuos_ordenados = sorted(poblacion, key=comparar_fitness, reverse=True)
+    # Obtenemos la cantidad de individuos que se van a sustituir
+    cantidad_individuos_reemplazar = int(len(poblacion) * parametros['p_reemplazo'])
+    # Aqui se hara el cruce y va a retornar los nuevos individuos que se usaran para el reemplazo
+    reemplazo_individuos = cruce_sustitucion_parcial(poblacion, 0.1, cantidad_individuos_reemplazar)
+    # Se realiza la mutacion de los nuevos individuos
+    mutacion_poblacion(reemplazo_individuos, parametros['p_muta'])
+    # Se agregan los nuevos individuos a la poblacion
+    individuos_ordenados[-cantidad_individuos_reemplazar:] = reemplazo_individuos
+
+    return individuos_ordenados
