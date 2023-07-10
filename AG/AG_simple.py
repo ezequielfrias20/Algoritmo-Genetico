@@ -10,19 +10,19 @@ def AG_simple(parametros):
     # Creamos la poblacion
     poblacion = population_func(parametros['variables'], parametros['n_pob'])
     pob0 = poblacion
-    mejor_ind = poblacion[0]
     index = 0
     ronda = 0
     list_fitness = []
     list_ronda = []
     for generacion in range(parametros['n_gen']):
-        
         #Obtenemos los valores reales para cada individuo
         for i in range(len(poblacion)):
             poblacion[i].real = binario_a_real(poblacion[i].binario, parametros['variables'])
 
         # Evaluamos el fitness
         fitness_func(parametros, poblacion, funcion_seleccionada(parametros['funcion']))
+
+        mejor_ind = poblacion[0]
 
         # Mejor Individuo
         for i,ind in enumerate(poblacion):
@@ -35,7 +35,7 @@ def AG_simple(parametros):
         # Seleccion por Ruleta
         individuos_seleccionados = seleccion_ruleta(poblacion)
 
-        imprimir_poblacion(individuos_seleccionados)
+        # imprimir_poblacion(individuos_seleccionados)
 
         # Cruce
         poblacion = cruce_ruleta_crossover(individuos_seleccionados, parametros['p_cruce'])

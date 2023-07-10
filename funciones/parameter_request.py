@@ -129,7 +129,7 @@ def solicitud_parametros():
     # Tamaño de Poblacion
     while True:
         try:
-            n_pob = int(input('Insete el tamaño de poblacion:  '))
+            n_pob = int(input('Inserte el tamaño de poblacion:  '))
             if n_pob % 2 == 1:
                 print('Por facilidada de cálculo debe insertar un mútiplo de 2')
                 continue
@@ -156,19 +156,6 @@ def solicitud_parametros():
         except:
             print('Debe insertar un número de punto flotante')
             continue
-    p_reemplazo = 0.0
-    if AG in {'4'} :
-        # Probabilidad de reemplazo
-        while True:
-            try:
-                p_reemplazo = float(input('Inserte la Probabilidad de reemplazo:  '))
-                if p_reemplazo > 1.0 or p_reemplazo < 0.0:
-                    print('la probabilidad debe ser un número entre 1 y 0')
-                    continue
-                break
-            except:
-                print('Debe insertar un número de punto flotante')
-                continue
     # Probabilidade de mutacion
     while True:
         try:
@@ -180,6 +167,74 @@ def solicitud_parametros():
         except:
             print('Debe insertar un número de punto flotante')
             continue
+
+    while True:
+        try:
+            respuesta = input(
+                'Desea aplicar renormalizacion?').strip().upper()
+            if respuesta not in ('Y', 'N'):
+                print('La respuesta debe ser Y o N')
+                continue
+            renormalizacion = True if respuesta == 'Y' else False
+            break
+        except:
+            print('Debe insertar un string válido')
+            continue
+    if renormalizacion:
+        while True:
+            try:
+                tope = int(input('Inserte el tope para la renormalizacion:  '))
+            except:
+                print('Debe insertar un número entero')
+                continue
+    if renormalizacion:        
+        while True:
+            try:
+                paso = int(input('Inserte el paso para la renormalizacion:  '))
+            except:
+                print('Debe insertar un número entero')
+                continue
+
+    while True:
+        try:
+            respuesta = input(
+                'Desea aplicar elitismo?').strip().upper()
+            if respuesta not in ('Y', 'N'):
+                print('La respuesta debe ser Y o N')
+                continue
+            elitismo = True if respuesta == 'Y' else False
+            break
+        except:
+            print('Debe insertar un string válido')
+            continue
+
+    while True:
+        try:
+            respuesta = input(
+                'Desea aplicar sustitucion parcial?').strip().upper()
+            if respuesta not in ('Y', 'N'):
+                print('La respuesta debe ser Y o N')
+                continue
+            sustitucion = True if respuesta == 'Y' else False
+            break
+        except:
+            print('Debe insertar un string válido')
+            continue
+    
+    p_reemplazo = 0.0
+    if sustitucion :
+        # Probabilidad de reemplazo
+        while True:
+            try:
+                p_reemplazo = float(input('Inserte la Probabilidad de reemplazo:  '))
+                if p_reemplazo > 1.0 or p_reemplazo < 0.0:
+                    print('la probabilidad debe ser un número entre 1 y 0')
+                    continue
+                break
+            except:
+                print('Debe insertar un número de punto flotante')
+                continue
+
     return {
         'variables': variables,
         'funcion': funcion,
@@ -188,5 +243,10 @@ def solicitud_parametros():
         'n_gen': n_gen,
         'p_cruce': p_cruce,
         'p_muta': p_muta,
-        'p_reemplazo': p_reemplazo
+        'p_reemplazo': p_reemplazo,
+        'renormalizacion': renormalizacion,
+        'tope': tope,
+        'paso': paso,
+        'elitismo': elitismo,
+        'sustitucion': sustitucion
     }

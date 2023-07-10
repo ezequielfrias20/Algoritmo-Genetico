@@ -26,11 +26,16 @@ def binario_a_real(lista_binario_individuo, variables):
     indice = 0
     valores_reales_individuo = []
 
+    #  # Generar la lista de valores aleatorios
+    # valor_aleatorio = np.random.uniform(min(var['limites']), max(var['limites']))
+
+    # # # Redondear los valores a la precisión deseada
+    # values = round(valor_aleatorio, var['precision'])
+
     for var in variables:
         # Valor por cada variable
         valor_binario = lista_binario_individuo[indice: indice + var['bits']]
-        substring = sum(
-            [bit*2**i for i, bit in enumerate(reversed(valor_binario))])  # Substring
+        substring = sum([bit*2**i for i, bit in enumerate(reversed(valor_binario))])  # Substring
         valor_real = min(var['limites']) + (substring*(max(var['limites']) - min(var['limites'])))/(2**var['bits'] - 1)  # Calculo del valor real
         # Se agrega el valor real con su precision
         valores_reales_individuo.append(round(valor_real, var['precision']))
@@ -51,6 +56,7 @@ def population_func(variables, longitud_poblacion):
         'p_seleccion': None,
         'v_esperado': None,
     }) for _ in range(longitud_poblacion)]
+
     return poblacion
 
 
@@ -58,7 +64,7 @@ def fitness_func(parametros, poblacion, F):
     # Funcion que se encarga de evaluar el fitness
     for i in range(len(poblacion)):
         value = F(poblacion[i].real)
-        poblacion[i].fitness = value if parametros['max_min'] else 100 /(1 + value) # La ec 100 /(1 + value) es para que entre menor valor tenga la evalucion del fitness, el fitness sera mas alto
+        poblacion[i].fitness = value if parametros['max_min'] else 100/1+(value) # La ec 100 /(1 + value) es para que entre menor valor tenga la evalucion del fitness, el fitness sera mas alto
 
 def valores_esperados(poblacion):
     fit_prom = sum([ind.fitness for ind in poblacion])/len(poblacion)
@@ -68,6 +74,7 @@ def valores_esperados(poblacion):
 
 
 def renormalizacion_lineal(poblacion):
+  print('se hizo')
   fitness_descendente = sorted(poblacion, key=lambda individuo: individuo.fitness, reverse=True)
   imprimir_poblacion(fitness_descendente)
   min_value = fitness_descendente[-1].fitness
@@ -144,7 +151,7 @@ def cruce_ruleta_crossover(individuos_seleccionados, tasa_crossover):
     # Generar nuevos hijos
     hijos = []
     for pareja in parejas:
-        if rand() > tasa_crossover:
+        if rand() <= tasa_crossover:
             hijo1, hijo2 = crossover_un_punto(pareja[0], pareja[1])
             hijos.append(hijo1)
             hijos.append(hijo2)
