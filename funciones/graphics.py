@@ -42,19 +42,19 @@ def imprimir_grafico(list_ronda, list_fitness, poblacion):
 	axs[0].set_xlabel('generacion')
 	axs[0].set_title('Evolucion del mejor individuo')
 
-	# x = []
-	# y = []
+	x = []
+	y = []
 
-	# for ind in poblacion:
-	#     reales = ind.real
-	#     x.append(reales[0])
-	#     y.append(reales[1])
-	# axs[1].scatter(x,y)
+	for ind in poblacion:
+		reales = ind.real
+		x.append(reales[0])
+		y.append(reales[1])
+	axs[1].scatter(x,y)
 
-	# # Agregar etiquetas de eje y título
-	# axs[1].set_xlabel('Eje x')
-	# axs[1].set_ylabel('Eje y')
-	# axs[1].set_title('Gráfica de puntos')
+	# Agregar etiquetas de eje y título
+	axs[1].set_xlabel('Eje x')
+	axs[1].set_ylabel('Eje y')
+	axs[1].set_title('Gráfica de puntos')
 
 	# Mostrar el gráfico
 	plt.show()

@@ -19,4 +19,4 @@ def F2_T3(x):
     return 0.5 - ((np.sin(np.sqrt(x[0]**2 + x[1]**2))**2 - 0.5)/ (1 + 0.001*(x[0]**2 + x[1]**2))**2)
 
 def F3_T3(x):
-    return 21.5 + x[0]*np.sin(4*np.pi*x[0]) + x[1]*np.sin(20*np.pi*x[1])
+    return 21.5 + (x[0]*np.sin(4*np.pi*x[0])) + (x[1]*np.sin(20*np.pi*x[1]))

@@ -6,8 +6,6 @@ from funciones.funciones_optimizar import F2_T1, F1_T1
 def AG_general(parametros): 
     ############## PROCESO #######################
 
-    print(parametros['variables'])
-
     # Creamos la poblacion
     poblacion = population_func(parametros['variables'], parametros['n_pob'])
     # Obtenemos los valores reales para cada individuo
@@ -19,8 +17,9 @@ def AG_general(parametros):
 
     pob0 = poblacion
     mejor_ind = poblacion[0]
+    # mejor_individuo_algoritmo = poblacion[0]
+    gen = 1
     index = 0
-    ronda = 0
     list_fitness = []
     list_ronda = []
     for generacion in range(parametros['n_gen']):
@@ -31,12 +30,12 @@ def AG_general(parametros):
 
         ########################################### RENORMALIZACION ########################################################
 
-        if parametros['renormalizacion'] : poblacion = renormalizacion_lineal(poblacion)
+        if parametros['renormalizacion'] : poblacion = renormalizacion_lineal(poblacion, parametros['tope'], parametros['paso'])
 
         #####################################################################################################################
 
         # Seleccion por Ruleta
-        individuos_seleccionados = seleccion_ruleta(poblacion)
+        individuos_seleccionados = sobrante_estocastico(poblacion)
 
         # imprimir_poblacion(individuos_seleccionados)
 
@@ -57,6 +56,12 @@ def AG_general(parametros):
         # Evaluamos el fitness
         fitness_func(parametros, poblacion, funcion_seleccionada(parametros['funcion']))
 
+        ########################################### RENORMALIZACION ########################################################
+
+        if parametros['renormalizacion'] : poblacion = renormalizacion_lineal(poblacion, parametros['tope'], parametros['paso'])
+
+        #####################################################################################################################
+
         ########################################### ELITISMO ########################################################
         if parametros['elitismo']:
             c = len(poblacion)-1
@@ -75,9 +80,17 @@ def AG_general(parametros):
         list_fitness.append(mejor_ind_gen)
         list_ronda.append(generacion)
 
+        mejor_individuo_algoritmo = copy.deepcopy(poblacion[0])
+        for i,ind in enumerate(poblacion):
+            if ind.fitness > mejor_individuo_algoritmo.fitness:
+                mejor_individuo_algoritmo = copy.deepcopy(ind)
+                gen = generacion
+
     ########################################### GRAFICAS ########################################################
-    # imprimir_tabla(pob0, poblacion)
-    print(list_fitness)
+    imprimir_tabla(pob0, poblacion)
+    print('Mejor Individuo ultima generacion ===>', mejor_individuo_algoritmo.real)
+    print('Mejor Individuo fitness ===>', mejor_individuo_algoritmo.fitness)
+    print('En la generacion ===>', gen)
     imprimir_grafico(list_ronda, list_fitness, poblacion)
     # print(f"Mejor Individuo {mejor_ind.real} en la ronda {ronda}")
     # print(f"Fitness {list_fitness}")

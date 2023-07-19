@@ -6,31 +6,30 @@ parametros_default = {
     'n_pob': 100,
     'n_gen': 50,
     'p_cruce': 0.8,
-    'p_muta': 0.1,
-    'p_reemplazo' : 0.0
+    'p_muta': 0.1
 }
 
 
 def solicitud_parametros():
     """Solicitud de parametros de inicio"""
     # AG Seleccionado
-    while True:
-        try:
-            AG = str(
-                input('''Cual opcion desea realizar?
-                (1) AG simple
-                (2) AGS1 con renormalización lineal
-                (3) AGM2 con elitismo
-                (4) AGM3 con sustitución parcial
-                (5) AGM4 sin duplicados
-                ''')).strip().upper()
-            if AG not in {'1', '2', '3', '4', '5'}:
-                print('La respuesta debe ser 1, 2, 3, 4 o 5')
-                continue
-            break
-        except:
-            print('Debe insertar un string válido')
-            continue
+    # while True:
+    #     try:
+    #         AG = str(
+    #             input('''Cual opcion desea realizar?
+    #             (1) AG simple
+    #             (2) AGS1 con renormalización lineal
+    #             (3) AGM2 con elitismo
+    #             (4) AGM3 con sustitución parcial
+    #             (5) AGM4 sin duplicados
+    #             ''')).strip().upper()
+    #         if AG not in {'1', '2', '3', '4', '5'}:
+    #             print('La respuesta debe ser 1, 2, 3, 4 o 5')
+    #             continue
+    #         break
+    #     except:
+    #         print('Debe insertar un string válido')
+    #         continue
     # Funcion a usar
     while True:
         try:
@@ -106,6 +105,107 @@ def solicitud_parametros():
         var.update({
             'bits': bits_por_variable(var)
         })
+
+    
+    while True:
+        try:
+            ag_simple = input(
+                'Desea realizar un algoritmo genetico simple? (Y) o (N)  ').strip().upper()
+            if ag_simple not in ('Y', 'N'):
+                print('La respuesta debe ser Y o N')
+                continue
+            ag_simple = True if ag_simple == 'Y' else False
+            break
+        except:
+            print('Debe insertar un string válido')
+            continue
+    if ag_simple:
+        elitismo = False
+        renormalizacion = False
+        sustitucion = False
+        tope = 0
+        paso = 0
+        p_reemplazo = 0.0
+
+    if not ag_simple:
+        tope = False
+        paso = False
+        while True:
+            try:
+                respuesta = input(
+                    'Desea aplicar renormalizacion? (Y) o (N)  ').strip().upper()
+                if respuesta not in ('Y', 'N'):
+                    print('La respuesta debe ser Y o N')
+                    continue
+                renormalizacion = True if respuesta == 'Y' else False
+                break
+            except:
+                print('Debe insertar un string válido')
+                continue
+        if renormalizacion:
+            while True:
+                try:
+                    tope = int(input('Inserte el tope para la renormalizacion:  '))
+                    break
+                except:
+                    print('Debe insertar un número entero')
+                    continue
+        if renormalizacion:        
+            while True:
+                try:
+                    paso = int(input('Inserte el paso para la renormalizacion:  '))
+                    break
+                except:
+                    print('Debe insertar un número entero')
+                    continue
+
+        while True:
+            try:
+                respuesta = input(
+                    'Desea aplicar elitismo? (Y) o (N)').strip().upper()
+                if respuesta not in ('Y', 'N'):
+                    print('La respuesta debe ser Y o N')
+                    continue
+                elitismo = True if respuesta == 'Y' else False
+                renormalizacion = renormalizacion
+                tope = tope if tope else 100
+                paso = paso if paso else 1
+                break
+            except:
+                print('Debe insertar un string válido')
+                continue
+
+        while True:
+            try:
+                respuesta = input(
+                    'Desea aplicar sustitucion parcial? (Y) o (N)  ' ).strip().upper()
+                if respuesta not in ('Y', 'N'):
+                    print('La respuesta debe ser Y o N')
+                    continue
+                sustitucion = True if respuesta == 'Y' else False
+                # Esto se hace debido a las codiciones de la tarea que se haga sust parcial con elitismo y renormalizacion
+                elitismo = elitismo
+                renormalizacion = renormalizacion
+                tope = tope if tope else 100
+                paso = paso if paso else 1
+                break
+            except:
+                print('Debe insertar un string válido')
+                continue
+        
+        p_reemplazo = 0.0
+        if sustitucion :
+            # Probabilidad de reemplazo
+            while True:
+                try:
+                    p_reemplazo = float(input('Inserte la Probabilidad de reemplazo:  '))
+                    if p_reemplazo > 1.0 or p_reemplazo < 0.0:
+                        print('la probabilidad debe ser un número entre 1 y 0')
+                        continue
+                    break
+                except:
+                    print('Debe insertar un número de punto flotante')
+                    continue
     # Continuar con parámetros standar
     while True:
         try:
@@ -124,7 +224,13 @@ def solicitud_parametros():
             'variables': variables,
             'funcion': funcion,
             'max_min': True if max_min == '1' else False,
-            'AG': AG
+            'p_reemplazo': p_reemplazo,
+            'renormalizacion': renormalizacion,
+            'tope': tope,
+            'paso': paso,
+            'elitismo': elitismo,
+            'sustitucion': sustitucion
+            # 'AG': AG
         } | parametros_default
     # Tamaño de Poblacion
     while True:
@@ -167,74 +273,7 @@ def solicitud_parametros():
         except:
             print('Debe insertar un número de punto flotante')
             continue
-
-    while True:
-        try:
-            respuesta = input(
-                'Desea aplicar renormalizacion?').strip().upper()
-            if respuesta not in ('Y', 'N'):
-                print('La respuesta debe ser Y o N')
-                continue
-            renormalizacion = True if respuesta == 'Y' else False
-            break
-        except:
-            print('Debe insertar un string válido')
-            continue
-    if renormalizacion:
-        while True:
-            try:
-                tope = int(input('Inserte el tope para la renormalizacion:  '))
-            except:
-                print('Debe insertar un número entero')
-                continue
-    if renormalizacion:        
-        while True:
-            try:
-                paso = int(input('Inserte el paso para la renormalizacion:  '))
-            except:
-                print('Debe insertar un número entero')
-                continue
-
-    while True:
-        try:
-            respuesta = input(
-                'Desea aplicar elitismo?').strip().upper()
-            if respuesta not in ('Y', 'N'):
-                print('La respuesta debe ser Y o N')
-                continue
-            elitismo = True if respuesta == 'Y' else False
-            break
-        except:
-            print('Debe insertar un string válido')
-            continue
-
-    while True:
-        try:
-            respuesta = input(
-                'Desea aplicar sustitucion parcial?').strip().upper()
-            if respuesta not in ('Y', 'N'):
-                print('La respuesta debe ser Y o N')
-                continue
-            sustitucion = True if respuesta == 'Y' else False
-            break
-        except:
-            print('Debe insertar un string válido')
-            continue
     
-    p_reemplazo = 0.0
-    if sustitucion :
-        # Probabilidad de reemplazo
-        while True:
-            try:
-                p_reemplazo = float(input('Inserte la Probabilidad de reemplazo:  '))
-                if p_reemplazo > 1.0 or p_reemplazo < 0.0:
-                    print('la probabilidad debe ser un número entre 1 y 0')
-                    continue
-                break
-            except:
-                print('Debe insertar un número de punto flotante')
-                continue
-
     return {
         'variables': variables,
         'funcion': funcion,
