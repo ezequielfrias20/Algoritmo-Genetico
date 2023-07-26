@@ -73,9 +73,8 @@ def fitness_func(parametros, poblacion, F):
     # Funcion que se encarga de evaluar el fitness
     for i in range(len(poblacion)):
         value = F(poblacion[i].real)
-        # La ec 100 /(1 + value) es para que entre menor valor tenga la evalucion del fitness, el fitness sera mas alto
-        poblacion[i].fitness = value if parametros['max_min'] else 1 / \
-            (1+(value))
+        # La ec 1 /(1 + value) es para que entre menor valor tenga la evalucion del fitness, el fitness sera mas alto
+        poblacion[i].fitness = value if parametros['max_min'] else 1/value
 
 
 def valores_esperados(poblacion):
@@ -148,7 +147,7 @@ def crossover_un_punto(padre1, padre2):
     return hijo1, hijo2
 
 
-# Función de reproducción utilizando selección por ruleta y crossover de un punto
+# Función de reproducción utilizando selección por ruleta y crossover de 2 punto
 def cruce_ruleta_crossover(individuos_seleccionados, tasa_crossover):
     random.shuffle(individuos_seleccionados)
     # Seleccionar parejas de padres utilizando el método de la ruleta
@@ -351,9 +350,13 @@ def cruce_sustitucion_parcial(individuos_seleccionados, tasa_crossover, cantidad
                     hijo1, "binario") for ind in individuos_seleccionados)
                 existe_hijo2 = any(getattr(ind, "binario") == getattr(
                     hijo2, "binario") for ind in individuos_seleccionados)
-                if ((len(hijos) < cantidad_individuos_reemplazar) and (not existe_hijo1)):
+                # if ((len(hijos) < cantidad_individuos_reemplazar) and (not existe_hijo1)):
+                #     hijos.append(hijo1)
+                # if ((len(hijos) < cantidad_individuos_reemplazar) and (not existe_hijo2)):
+                #     hijos.append(hijo2)
+                if ((len(hijos) < cantidad_individuos_reemplazar)):
                     hijos.append(hijo1)
-                if ((len(hijos) < cantidad_individuos_reemplazar) and (not existe_hijo2)):
+                if ((len(hijos) < cantidad_individuos_reemplazar)):
                     hijos.append(hijo2)
 
     # Combinar padres y hijos en una nueva población

@@ -4,9 +4,9 @@ from funciones.common import *
 
 parametros_default = {
     'n_pob': 100,
-    'n_gen': 50,
-    'p_cruce': 0.8,
-    'p_muta': 0.1
+    'n_gen': 100,
+    'p_cruce': 0.9,
+    'p_muta': 0.01
 }
 
 

@@ -15,9 +15,14 @@ def AG_general(parametros):
     # Evaluamos el fitness
     fitness_func(parametros, poblacion, funcion_seleccionada(parametros['funcion']))
 
+    print(parametros)
+
     pob0 = poblacion
     mejor_ind = poblacion[0]
-    # mejor_individuo_algoritmo = poblacion[0]
+
+    mejor_ind_corrida = poblacion[0]
+    gen_mejor_ind = 0
+    
     gen = 1
     index = 0
     list_fitness = []
@@ -58,7 +63,7 @@ def AG_general(parametros):
 
         ########################################### RENORMALIZACION ########################################################
 
-        if parametros['renormalizacion'] : poblacion = renormalizacion_lineal(poblacion, parametros['tope'], parametros['paso'])
+        # if parametros['renormalizacion'] : poblacion = renormalizacion_lineal(poblacion, parametros['tope'], parametros['paso'])
 
         #####################################################################################################################
 
@@ -75,22 +80,32 @@ def AG_general(parametros):
                 poblacion[index] = copy.deepcopy(mejor_ind)
 
         ##############################################################################################################
-
-        mejor_ind_gen = max([ i.fitness for i in poblacion])
-        list_fitness.append(mejor_ind_gen)
-        list_ronda.append(generacion)
-
+     
+        # Mejor Individuo de la generacion
         mejor_individuo_algoritmo = copy.deepcopy(poblacion[0])
         for i,ind in enumerate(poblacion):
             if ind.fitness > mejor_individuo_algoritmo.fitness:
                 mejor_individuo_algoritmo = copy.deepcopy(ind)
                 gen = generacion
 
+        # Mejor Individuo de la corrida
+        if (mejor_individuo_algoritmo.fitness > mejor_ind_corrida.fitness):
+            mejor_ind_corrida = copy.deepcopy(mejor_individuo_algoritmo)
+            gen_mejor_ind = generacion
+
+
+        list_fitness.append(mejor_individuo_algoritmo.fitness)
+        list_ronda.append(generacion)
+
     ########################################### GRAFICAS ########################################################
     imprimir_tabla(pob0, poblacion)
     print('Mejor Individuo ultima generacion ===>', mejor_individuo_algoritmo.real)
-    print('Mejor Individuo fitness ===>', mejor_individuo_algoritmo.fitness)
     print('En la generacion ===>', gen)
+    print('Mejor Individuo de toda la corrida ===>', mejor_ind_corrida.real)
+    print('En la generacion ===>', gen_mejor_ind)
+    print('Mejor Individuo fitness ===>', mejor_individuo_algoritmo.fitness)
+    print('Mejor Individuo ultima generacion fitness ===>', list_fitness[-1])
+    
     imprimir_grafico(list_ronda, list_fitness, poblacion)
     # print(f"Mejor Individuo {mejor_ind.real} en la ronda {ronda}")
     # print(f"Fitness {list_fitness}")

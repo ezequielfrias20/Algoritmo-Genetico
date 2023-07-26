@@ -5,33 +5,33 @@ from AG.AG_sust_parcial import *
 from AG.AG_general import *
 
 
-############## PARAMETROS #######################
+############## PARAMETROS #######################1
 parametros = {
     'n_pob': 100,
     'n_gen': 50,
     'p_cruce': 0.8,
-    'p_muta': 0.1,
+    'p_muta': 0.002,
     'variables': [{
         'nombre': 'x',
-        'limites': [-10, 10],
-        'bits': 37,
-        'precision': 10
+        'limites': [-8, 8],
+        'bits': 23, 
+        'precision': 6
     },{
         'nombre': 'y',
-        'limites': [-10, 10],
-        'bits': 37,
-        'precision': 10
+        'limites': [-8,8],
+        'bits': 23,
+        'precision': 6
     }],
     'funcion': '3',
-    'max_min': True,
-    'renormalizacion': True,
-    'tope': 200,
-    'paso': 2,
+    'max_min': False,
+    'renormalizacion': False,
+    'tope': 100,
+    'paso': 1,
     'elitismo': False,
     'sustitucion': False,
     'p_reemplazo': 0.1,
 }
 
-parametros = solicitud_parametros()
+# parametros = solicitud_parametros()
 
 AG_general(parametros)
