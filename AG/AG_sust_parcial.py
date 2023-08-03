@@ -2,55 +2,38 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import rand, randint, shuffle
 import random
-from funciones.common import *
-from funciones.graphics import *
-from funciones.parameter_request import *
+
 import copy
 
-def AG_sust_parcial(parametros) :
-    ############## PROCESO #######################
+def crossover_orden(padre1, padre2, len_mascara):
+    # generamos un array de bits aleatorios (mascara)
+    mascara = list(np.random.randint(2, size=len_mascara))
 
-    # Creamos la poblacion
-    poblacion = population_func(parametros['variables'], parametros['n_pob'])
-    pob0 = poblacion
-    mejor_ind = poblacion[0]
-    index = 0
-    ronda = 0
-    list_fitness = []
-    list_ronda = []
-    for generacion in range(parametros['n_gen']):
-        
-        #Obtenemos los valores reales para cada individuo
-        for i in range(len(poblacion)):
-            poblacion[i].real = binario_a_real(poblacion[i].binario, parametros['variables'])
+    # generamos un array para los hijos
+    hijo2 =  [0 for i in range(len_mascara)]
+    hijo1 = [0 for i in range(len_mascara)]
 
-        # Evaluamos el fitness
-        fitness_func(parametros, poblacion, funcion_seleccionada(parametros['funcion']))
+    lista_0 = []  # Aqui guardaremos el valor y posicion del padre1 cuando en la mascara sea 0
+    lista_1 = []  # Aqui guardaremos el valor y posicion del padre2 cuando en la mascara sea 1
+    for i, bit in enumerate(mascara):
+        if (bit == 1):
+            # Guardamos el valor del padre1 en el hijo1 en la misma posicion
+            hijo1[i] = padre1[i]
+            # Almacenamos el valor del padre2 cuando es 1
+            lista_1.append({"value": padre2[i], "i": i})
+        if (bit == 0):
+            # Almacenamos el valor del padre1 cuando es 0
+            lista_0.append({"value": padre1[i], "i": i})
+            # Guardamos el valor del padre2 en el hijo2 en la misma posicion
+            hijo2[i] = padre2[i]
+    # Permutamos las listas
+    random.shuffle(lista_0)
+    random.shuffle(lista_1)
 
-        # Mejor Individuo
-        for i,ind in enumerate(poblacion):
-            if ind.fitness > mejor_ind.fitness:
-                mejor_ind = ind
-                index = i
-        list_fitness.append(mejor_ind.fitness)
-        list_ronda.append(generacion)
+    # Añadimos los valores faltantes a los hijos en sus respectivos indices
+    for item in lista_0:
+        hijo1[item.i] = item.value
+    for item in lista_1:
+        hijo2[item.i] = item.value
 
-        # Seleccion
-        individuos_seleccionados = seleccion_ruleta(poblacion)
-
-        # Se realiza toda la sustitucion parcial
-        poblacion = sustitucion_parcial(individuos_seleccionados, parametros)
-
-
-        #Obtenemos los valores reales para cada individuo
-        for ind in range(len(poblacion)):
-            poblacion[ind].real = binario_a_real(poblacion[ind].binario, parametros['variables'])
-
-        # Evaluamos el fitness
-        fitness_func(parametros, poblacion, funcion_seleccionada(parametros['funcion']))
-
-    ########################################### GRAFICAS ########################################################
-    # imprimir_tabla(pob0, poblacion)
-    imprimir_grafico(list_ronda, list_fitness, poblacion)
-    print(f"Mejor Individuo {mejor_ind.real} en la ronda {ronda}")
-    print(f"Fitness {list_fitness}")
+    return hijo1, hijo2

@@ -17,9 +17,7 @@ def imprimir_poblacion(poblacion):
         print(f"Reales: {poblacion[i].real}, Fitness: {poblacion[i].fitness}")
         # print(type(individuo))
 
-def imprimir_tabla(pob1: list, pob2:list):
-	print(f'pob1 len es {len(pob1)}')
-	print(f'pob2 len es {len(pob2)}')
+def imprimir_tabla(pob1, pob2):
 	tabla = PrettyTable()
 	tabla.field_names = ('Pob inicial','fitness0','','Pob final','fitness1')
 	for i in range(len(pob1)):

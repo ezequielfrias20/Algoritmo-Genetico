@@ -2,8 +2,11 @@ from funciones.common import *
 from funciones.graphics import *
 from funciones.parameter_request import *
 from funciones.funciones_optimizar import F2_T1, F1_T1
+import time
 
-def AG_general(parametros): 
+
+def AG_general(parametros):
+    inicio = time.time()
     ############## PROCESO #######################
 
     # Creamos la poblacion
@@ -42,7 +45,7 @@ def AG_general(parametros):
         # Seleccion por Ruleta
         individuos_seleccionados = sobrante_estocastico(poblacion)
 
-        # imprimir_poblacion(individuos_seleccionados)
+        #imprimir_poblacion(individuos_seleccionados)
 
         if parametros['sustitucion'] :
             poblacion = sustitucion_parcial(individuos_seleccionados, parametros)
@@ -105,6 +108,10 @@ def AG_general(parametros):
     print('En la generacion ===>', gen_mejor_ind)
     print('Mejor Individuo fitness ===>', mejor_individuo_algoritmo.fitness)
     print('Mejor Individuo ultima generacion fitness ===>', list_fitness[-1])
+
+    fin = time.time()
+
+    print(f'La ejecución se tardo {fin-inicio}')
     
     imprimir_grafico(list_ronda, list_fitness, poblacion)
     # print(f"Mejor Individuo {mejor_ind.real} en la ronda {ronda}")

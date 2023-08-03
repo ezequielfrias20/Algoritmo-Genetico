@@ -24,7 +24,7 @@ def funcion_seleccionada(funcion):
 
 def bits_por_variable(var):
     # Funcion que selecciona los bits por cada variable
-    m = np.log((max(var['limites'])-min(var['limites']))
+    m = np.log2((max(var['limites'])-min(var['limites']))
                * (10**var['precision']) + 1)/np.log(2)
     return round(m)
 
@@ -74,7 +74,7 @@ def fitness_func(parametros, poblacion, F):
     for i in range(len(poblacion)):
         value = F(poblacion[i].real)
         # La ec 1 /(1 + value) es para que entre menor valor tenga la evalucion del fitness, el fitness sera mas alto
-        poblacion[i].fitness = value if parametros['max_min'] else 1/value
+        poblacion[i].fitness = value if parametros['max_min'] else -value
 
 
 def valores_esperados(poblacion):
@@ -284,16 +284,20 @@ def elitismo(poblacion, mejor_ind, index):
 
 def sobrante_estocastico(poblacion):
     # Versión sin reemplazo
-    val_esp = valores_esperados(poblacion)
+    val_esp = valores_esperados(poblacion) # Lista de valores esperados
+    print('VALORES ESPERADOS ====>', val_esp)
     parte_entera = [val//1 for val in val_esp]  # Parte entera de los sobrantes
+    print('LISTA DE PARTE ENTERA ====>', parte_entera)
     sobrante = [val % 1 for val in val_esp]  # Residuo de los sobrantes
     nueva_poblacion = []
+    # Se asigna de manera deterministica las partes enteras
     for index, val in enumerate(parte_entera):
         k = 0
         while k != val:
             nueva_poblacion.append(poblacion[index])
             k += 1
     while len(nueva_poblacion) != len(poblacion):
+        # Se asigna de manera probabilistica las partes sobrantes
         for index, val in enumerate(sobrante):
             r = rand()
             if r <= val:
@@ -381,3 +385,37 @@ def sustitucion_parcial(poblacion, parametros):
     individuos_ordenados[-cantidad_individuos_reemplazar:] = reemplazo_individuos
 
     return individuos_ordenados
+
+
+# def sin_duplicados(poblacion):
+#     nueva_poblacion = []
+#     for ind in poblacion:
+#         lista_duplicados = []
+#         for j in poblacion:
+#             if (ind.binario == j.binario):
+#                 lista_duplicados.append(j)
+#         nueva_poblacion.append()  
+
+
+def mutacion_basado_cambio(individuo):
+    # Calculamos el primer punto de manera aleatoria
+    primer_punto = randint(low=1, high=len(individuo.binario)-1)
+    # Calculamos el segundo punto de manera aleatoria
+    segundo_punto = randint(low=1, high=len(individuo.binario)-1)
+    # Verificamos que el segundo punto sea mayor que el primero
+    if primer_punto >= segundo_punto:
+        primer_punto, segundo_punto = segundo_punto, primer_punto
+    
+    # Seleccionamos un rango de valores dentro del individuo
+    subgira = individuo.binario[primer_punto:segundo_punto]
+    # Cambiamos su posicion
+    random.shuffle(subgira)
+    # Generamos el individuo
+    return Individuo({
+        'binario': individuo.binario[:primer_punto]+subgira+individuo.binario[segundo_punto:],
+        'fitness': None,
+        'p_seleccion': None,
+        'v_esperado': None,
+    })
+    
+
